@@ -36,13 +36,6 @@ deploy:
   script:
     - kubectl get namespace ${KUBERNETES_NAMESPACE} || kubectl create namespace ${KUBERNETES_NAMESPACE}
     - |
-      kubectl get secret gitlab-registry -n ${KUBERNETES_NAMESPACE} || \
-      kubectl create secret docker-registry gitlab-registry \
-        --docker-server=${CI_REGISTRY} \
-        --docker-username=${CI_REGISTRY_USER} \
-        --docker-password=${CI_REGISTRY_PASSWORD} \
-        --namespace=${KUBERNETES_NAMESPACE}
-    - |
       kubectl create secret generic catinaflat-credentials \
         --from-literal=CATINAFLAT_EMAIL=${CATINAFLAT_EMAIL} \
         --from-literal=CATINAFLAT_PASSWORD=${CATINAFLAT_PASSWORD} \

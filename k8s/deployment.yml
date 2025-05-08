@@ -24,4 +24,4 @@ spec:
         - secretRef:
             name: catinaflat-credentials
       imagePullSecrets:
-      - name: gitlab-registry
+      - name: gitlab-registry-secret
