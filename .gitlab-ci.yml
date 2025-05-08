@@ -33,7 +33,6 @@ deploy:
   before_script:
     - echo "${KUBE_CONFIG}" | base64 -d > /tmp/kubeconfig
     - export KUBECONFIG=/tmp/kubeconfig
-    - apk add --no-cache gettext
   script:
     - kubectl get namespace ${KUBERNETES_NAMESPACE} || kubectl create namespace ${KUBERNETES_NAMESPACE}
     - |
@@ -50,7 +49,11 @@ deploy:
         --from-literal=CATINAFLAT_USER_ID=${CATINAFLAT_USER_ID} \
         --namespace=${KUBERNETES_NAMESPACE} \
         --dry-run=client -o yaml | kubectl apply -f -
-    - cat k8s/deployment.yml | envsubst | kubectl apply -f -
+    - cp k8s/deployment.yml /tmp/deployment.yml
+    - sed -i "s|\${KUBERNETES_NAMESPACE}|${KUBERNETES_NAMESPACE}|g" /tmp/deployment.yml
+    - sed -i "s|\${DOCKER_IMAGE_NAME}|${DOCKER_IMAGE_NAME}|g" /tmp/deployment.yml
+    - sed -i "s|\${DOCKER_IMAGE_TAG}|${DOCKER_IMAGE_TAG}|g" /tmp/deployment.yml
+    - kubectl apply -f /tmp/deployment.yml
   tags:
     - raspberrypi
   only:
