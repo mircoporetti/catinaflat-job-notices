@@ -40,6 +40,8 @@ deploy:
         --from-literal=CATINAFLAT_EMAIL=${CATINAFLAT_EMAIL} \
         --from-literal=CATINAFLAT_PASSWORD=${CATINAFLAT_PASSWORD} \
         --from-literal=CATINAFLAT_USER_ID=${CATINAFLAT_USER_ID} \
+        --from-literal=EMAIL_SENDER_USER=${EMAIL_SENDER_USER} \
+        --from-literal=EMAIL_SENDER_PASSWORD=${EMAIL_SENDER_PASSWORD} \
         --namespace=${KUBERNETES_NAMESPACE} \
         --dry-run=client -o yaml | kubectl apply -f -
     - cp k8s/deployment.yml /tmp/deployment.yml

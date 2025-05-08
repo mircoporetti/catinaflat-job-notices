@@ -1,4 +1,3 @@
-// Scraper functionality for catinaflat job notices
 const puppeteer = require('puppeteer');
 
 async function setupBrowser(headless) {
@@ -18,7 +17,6 @@ async function setupBrowser(headless) {
         ]
     };
 
-    // Only set executablePath on Mac
     if (process.platform === 'darwin') {
         launchOptions.executablePath = '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome';
     }
@@ -54,13 +52,10 @@ async function login(page, email, password) {
         timeout: 30000 
     });
 
-    // Handle cookie consent
     await handleCookieConsent(page);
 
-    // Wait for the page to be fully loaded
     await page.waitForTimeout(2000);
 
-    // Debug: Check if we can find the form elements
     const formExists = await page.evaluate(() => {
         const emailInput = document.querySelector('#email');
         const passwordInput = document.querySelector('#password');
@@ -74,10 +69,8 @@ async function login(page, email, password) {
 
     console.log('Form elements found:', formExists);
 
-    // Fill in the login form
     console.log('Filling login form...');
 
-    // First focus the email field
     await page.focus('#email');
     await page.evaluate(() => {
         document.querySelector('#email').value = '';
@@ -87,7 +80,6 @@ async function login(page, email, password) {
 
     await page.waitForTimeout(500);
 
-    // Focus the password field
     await page.focus('#password');
     await page.evaluate(() => {
         document.querySelector('#password').value = '';
@@ -97,11 +89,9 @@ async function login(page, email, password) {
 
     await page.waitForTimeout(500);
 
-    // Click the login button
     console.log('Submitting login form...');
     await page.click('input[type="submit"]');
 
-    // Wait for navigation after login
     console.log('Waiting for navigation after login...');
     await page.waitForNavigation({ 
         waitUntil: 'networkidle0',
@@ -116,14 +106,11 @@ async function checkNoticeBoard(page, userId) {
         timeout: 30000 
     });
 
-    // Wait for the content to load
     await page.waitForSelector('body');
 
-    // Add a longer wait time for the page to fully load
     console.log('Waiting for page to fully load...');
     await page.waitForTimeout(3000);
 
-    // Try to find the notice board counter using a more general selector
     console.log('Looking for notice board counter...');
     try {
         const noticeCount = await page.evaluate(() => {
@@ -144,7 +131,6 @@ async function checkNoticeBoard(page, userId) {
 
         if (noticeCount > 0) {
             console.log('New job notices available!');
-            // Here you can add additional actions like sending notifications
         }
         return noticeCount;
     } catch (error) {
@@ -159,7 +145,6 @@ async function checkNoticeBoard(page, userId) {
 async function checkJobNotices(email, password, headless, userId) {
     console.log('Checking for new job notices...');
 
-    // Debug: Check if credentials are loaded
     console.log('Using credentials:', {
         email: email,
         password: password ? '***' : 'not set',
@@ -169,16 +154,14 @@ async function checkJobNotices(email, password, headless, userId) {
 
     const browser = await setupBrowser(headless);
     const page = await browser.newPage();
+    let noticeCount = 0;
 
     try {
-        // Set a reasonable viewport
         await page.setViewport({ width: 1280, height: 800 });
 
-        // Login process
         await login(page, email, password);
 
-        // Check notice board
-        await checkNoticeBoard(page, userId);
+        noticeCount = await checkNoticeBoard(page, userId);
 
     } catch (error) {
         console.error('Error during scraping:', error);
@@ -192,6 +175,8 @@ async function checkJobNotices(email, password, headless, userId) {
     } finally {
         await browser.close();
     }
+
+    return noticeCount;
 }
 
 module.exports = {
