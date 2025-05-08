@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: catinaflat-job-notices
+  namespace: ${KUBERNETES_NAMESPACE}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: catinaflat-job-notices
+  template:
+    metadata:
+      labels:
+        app: catinaflat-job-notices
+    spec:
+      containers:
+      - name: catinaflat-job-notices
+        image: ${DOCKER_IMAGE_NAME}:${DOCKER_IMAGE_TAG}
+        imagePullPolicy: Always
+        env:
+        - name: HEADLESS
+          value: "true"
+        envFrom:
+        - secretRef:
+            name: catinaflat-credentials
+      imagePullSecrets:
+      - name: gitlab-registry

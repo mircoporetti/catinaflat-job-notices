@@ -1,0 +1,57 @@
+stages:
+  - build
+  - deploy
+
+variables:
+  DOCKER_IMAGE_NAME: ${CI_REGISTRY}/gitlab-mirco/catinaflat-job-notices
+  DOCKER_IMAGE_TAG: ${CI_COMMIT_SHORT_SHA}
+  KUBERNETES_NAMESPACE: catinaflat-job-notices
+
+build:
+  stage: build
+  image: docker:20.10.16
+  services:
+    - docker:dind
+  before_script:
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+  script:
+    - echo "Building the Docker image"
+    - docker build -t ${DOCKER_IMAGE_NAME}:${DOCKER_IMAGE_TAG} .
+    - docker tag ${DOCKER_IMAGE_NAME}:${DOCKER_IMAGE_TAG} ${DOCKER_IMAGE_NAME}:latest
+    - docker push ${DOCKER_IMAGE_NAME}:${DOCKER_IMAGE_TAG}
+    - docker push ${DOCKER_IMAGE_NAME}:latest
+  tags:
+    - raspberrypi
+  only:
+    - branches
+
+deploy:
+  stage: deploy
+  image: docker:20.10.16
+  services:
+    - docker:dind
+  before_script:
+    - echo "${KUBE_CONFIG}" | base64 -d > /tmp/kubeconfig
+    - export KUBECONFIG=/tmp/kubeconfig
+    - apk add --no-cache gettext
+  script:
+    - kubectl get namespace ${KUBERNETES_NAMESPACE} || kubectl create namespace ${KUBERNETES_NAMESPACE}
+    - |
+      kubectl get secret gitlab-registry -n ${KUBERNETES_NAMESPACE} || \
+      kubectl create secret docker-registry gitlab-registry \
+        --docker-server=${CI_REGISTRY} \
+        --docker-username=${CI_REGISTRY_USER} \
+        --docker-password=${CI_REGISTRY_PASSWORD} \
+        --namespace=${KUBERNETES_NAMESPACE}
+    - |
+      kubectl create secret generic catinaflat-credentials \
+        --from-literal=CATINAFLAT_EMAIL=${CATINAFLAT_EMAIL} \
+        --from-literal=CATINAFLAT_PASSWORD=${CATINAFLAT_PASSWORD} \
+        --from-literal=CATINAFLAT_USER_ID=${CATINAFLAT_USER_ID} \
+        --namespace=${KUBERNETES_NAMESPACE} \
+        --dry-run=client -o yaml | kubectl apply -f -
+    - cat k8s/deployment.yml | envsubst | kubectl apply -f -
+  tags:
+    - raspberrypi
+  only:
+    - main
