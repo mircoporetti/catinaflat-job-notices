@@ -17,6 +17,7 @@ npm install
      CATINAFLAT_PASSWORD=your_password
      CATINAFLAT_USER_ID=your_user_id
      ```
+   - Alternatively, you can set these environment variables directly in your system, and the application will use them if the `.env` file is not present.
 
 ## Usage
 

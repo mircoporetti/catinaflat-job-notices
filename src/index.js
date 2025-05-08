@@ -8,8 +8,7 @@ const { checkJobNotices } = require('./scraper');
 const result = dotenv.config({ path: path.resolve(__dirname, '..', '.env') });
 
 if (result.error) {
-    console.error('Error loading .env file:', result.error);
-    process.exit(1);
+    console.warn('Warning: .env file not found. Using environment variables from the system.');
 }
 
 console.log('Environment loaded successfully');
