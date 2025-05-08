@@ -31,7 +31,7 @@ deploy:
   services:
     - docker:dind
   before_script:
-    - echo "${KUBE_CONFIG}" | base64 -d > /tmp/kubeconfig
+    - echo "$KUBECONFIG" > /tmp/kubeconfig
     - export KUBECONFIG=/tmp/kubeconfig
   script:
     - kubectl get namespace ${KUBERNETES_NAMESPACE} || kubectl create namespace ${KUBERNETES_NAMESPACE}
