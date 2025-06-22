@@ -65,7 +65,7 @@ async function checkAndNotify() {
 
 checkAndNotify();
 
-cron.schedule('0 */3 * * *', () => {
+cron.schedule('0 */1 * * *', () => {
     checkAndNotify();
 });
 
