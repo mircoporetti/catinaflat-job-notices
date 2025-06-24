@@ -42,7 +42,7 @@ async function handleCookieConsent(page) {
         await page.click('.cky-btn.cky-btn-accept[data-cky-tag="accept-button"]');
         console.log('Cookie consent accepted');
     } catch (error) {
-        console.log('Error during cookie consent handling:', error.message);
+        console.warn('Error during cookie consent handling:', error.message);
     }
 }
 
@@ -166,11 +166,11 @@ async function checkJobNotices(email, password, headless, userId) {
     } catch (error) {
         console.error('Error during scraping:', error);
         if (error.message.includes('permission')) {
-            console.error('\nPermission Error: Please make sure to:');
-            console.error('1. Allow Chrome to run in the Security & Privacy settings');
-            console.error('2. Grant necessary permissions when prompted');
-            console.error('3. If using macOS, you might need to run:');
-            console.error('   xattr -d com.apple.quarantine /Applications/Google\ Chrome.app');
+            console.log('\nPermission Error: Please make sure to:');
+            console.log('1. Allow Chrome to run in the Security & Privacy settings');
+            console.log('2. Grant necessary permissions when prompted');
+            console.log('3. If using macOS, you might need to run:');
+            console.log('   xattr -d com.apple.quarantine /Applications/Google\ Chrome.app');
         }
     } finally {
         await browser.close();

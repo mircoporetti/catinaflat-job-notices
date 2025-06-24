@@ -1,6 +1,8 @@
 const path = require('path');
 const dotenv = require('dotenv');
 const cron = require('node-cron');
+// Import logger to override console methods with timestamped versions
+require('./logger');
 const { checkJobNotices } = require('./scraper');
 const { sendEmailNotification } = require('./email_notification');
 
