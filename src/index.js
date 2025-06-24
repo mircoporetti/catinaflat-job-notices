@@ -71,4 +71,4 @@ cron.schedule('0 */1 * * *', () => {
     checkAndNotify();
 });
 
-console.log('Scraper started. Will check for new job notices every 3 hours.');
+console.log('Scraper started. Will check for new job notices every hour.');

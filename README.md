@@ -1,6 +1,6 @@
 # Catinaflat Job Notice Scraper
 
-This application automatically checks for new job notices on catinaflat.de every 3 hours and sends email notifications when new opportunities are available, helping cat sitters stay informed about potential jobs.
+This application automatically checks for new job notices on catinaflat.de every hour and sends email notifications when new opportunities are available, helping cat sitters stay informed about potential jobs.
 
 ## Implementation
 
@@ -40,5 +40,5 @@ npm start
 
 The scraper will:
 - Run immediately when started
-- Check for new job notices every 3 hours
+- Check for new job notices every hour
 - Notify by email if at least a new job notice is found
