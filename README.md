@@ -4,7 +4,7 @@ This application automatically checks for new job notices on catinaflat.de every
 
 ## Implementation
 
-The app has been implemented by using "Vibe Coding" as an experiment, initially with the usage of Cursor and then with IntelliJ Juniper
+The app has been implemented by using "Vibe Coding" as an experiment, initially with the usage of Cursor and then with IntelliJ Junie
 to compare the two tools.
 
 Manual intervention was limited to small fixes where the tools struggled, minor cleanup of comments,
