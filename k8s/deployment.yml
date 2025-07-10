@@ -13,8 +13,6 @@ spec:
       labels:
         app: catinaflat-job-notices
     spec:
-      nodeSelector:
-        node-role.kubernetes.io/worker: worker-i5
       containers:
       - name: catinaflat-job-notices
         image: ${DOCKER_IMAGE_NAME}:${DOCKER_IMAGE_TAG}
